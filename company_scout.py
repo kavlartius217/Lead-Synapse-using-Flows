@@ -18,7 +18,7 @@ def search_and_get_contents_tool(question: str) -> str:
     response = exa.search_and_contents(
         query=question,
         type="neural",
-        num_results=3,
+        num_results=30,
         highlights=True
     )
 
@@ -39,11 +39,11 @@ serper_dev_tool=SerperDevTool()
 
 #The company_scout crew
 @CrewBase
-class company_scout:
+class company_scout_bot:
   """ This crew will return a list of companies in a specific area and a domain"""
 
   @agent
-  def company_finder(self):
+  def company_finder(self)->Agent:
     return Agent(
         role="Company Discovery Specialist",
         goal="Identify and extract a relevant list of companies based on a specific industry domain and geographic area for business development outreach.",
@@ -58,8 +58,8 @@ class company_scout:
     )
 
 # Task definition
-@task
-def company_finder_task(self, domain: str, area: str):
+  @task
+  def company_finder_task(self)->Task:
     return Task(
         description=(
             "Use online tools to find and extract a comprehensive list of companies that operate in the **{domain}** domain "
@@ -83,10 +83,10 @@ def company_finder_task(self, domain: str, area: str):
         output_file="companies.md"
     )
 
-@crew
-def crew(self):
-  return Crew(
+  @crew
+  def crew(self)->Crew:
+   return Crew(
       agents=[self.company_finder()],
-      tasks=self.company_finder_task()
+      tasks=[self.company_finder_task()]
     )
 
